@@ -33,14 +33,51 @@ def main() -> None:
     print(f"Saved settings: {config_settings}")
 
     #now im converting WIDTH and HEIGHT into actual intergers
+    #Row = Vertical stack (Height / Y)
+    #Column = Horizontal width (Width / X)
     try:
         width = int(config_settings.get("WIDTH", "0")) #use a 0 to avoid a crash if no width/height available
         height = int(config_settings.get("HEIGHT", "0"))
-        print(f"Converted width: {width} (Type: {type(width)})") #type class will display the data type
+        print(f"Converted width: {width} (Type: {type(width)})") #type class will display the data type of width
         print(f"Converted height: {height} (Type: {type(height)})")
-    except ValueError as e:
+    except ValueError:
         print("Error: WIDTH and HEIGHT must be of interger type")
         return
+
+
+    #list comprehension to build the grid
+    maze_grid = [["#" for i in range(width)] for i in range(height)]
+    print(f"Maze grid created with {width} columns and {height} rows")
+
+    if width > 0 and height > 0:
+        print(f"First row: {maze_grid[0]}")
+
+
+
+
+    # PARSING ENTRY AND EXIT POINTS
+    entry_str = config_settings.get("ENTRY", "0,0")
+    entry_x, entry_y = map(int, entry_str.split(","))
+    #^map function is like a stamp apply x to x amount of x
+
+    exit_str = config_settings.get("EXIT", "19,14") #20,15
+    exit_x, exit_y = map(int, exit_str.split(","))
+
+    print(f"Entry point set: X = {entry_x} Y = {entry_y}")
+    print(f"Exit point set: X = {exit_x} Y = {exit_y}")
+
+
+    #MARKING COORDINATES
+    maze_grid[entry_y][entry_x] = "S" #Start
+    maze_grid[exit_y][exit_x] = "E" #Exit
+
+
+    print()
+    print("=== Maze preview ===")
+    for row in maze_grid:
+        print(" ".join(row))
+
+
 
 
 
