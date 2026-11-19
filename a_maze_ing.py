@@ -1,5 +1,6 @@
 import os
 import sys
+import random
 
 #OPENING THE CELL
 NORTH = 1
@@ -7,9 +8,10 @@ EAST = 2
 SOUTH = 4
 WEST = 8 
 
+
 def open_north(grid, x, y) -> None:
     grid[y][x] -= NORTH
-    grid[y - 1][x] -= SOUTH
+    grid[y - 1][x] -= SOUTH 
 
 def open_east(grid, x, y) -> None:
     grid[y][x] -= EAST
@@ -22,6 +24,35 @@ def open_south(grid, x, y) -> None:
 def open_west(grid, x, y) -> None:
     grid[y][x] -= WEST
     grid[y][x - 1] -= EAST
+
+
+#check if neighbouring cells exists!!!! will it fall off the grid
+def get_neighbours(x, y, width, height) -> list[tuple[int, int]]: #list of whole number pairs
+    neighbours = []
+    if y - 1 >= 0:
+        neighbours.append((x, y - 1)) #append takes one thing so (()) N
+    if x + 1 < width:
+        neighbours.append((x + 1, y)) # E
+    if y + 1 < height:
+        neighbours.append((x, y + 1)) # S
+    if x - 1 >= 0:
+        neighbours.append((x - 1, y)) # W
+    return neighbours
+
+
+
+
+def open_passage(grid, x, y, nextx, nexty) -> None: 
+    if nexty == y - 1:
+        open_north(grid, x, y)
+    elif nextx == x + 1:
+        open_east(grid, x, y)
+    elif nexty == y + 1:
+        open_south(grid, x, y)
+    elif nextx == x - 1:
+        open_west(grid, x, y)        
+
+
 
 
 
@@ -76,9 +107,10 @@ def main() -> None:
 
     #set all to false "these cells have not been visted" then kill me
     visited = [[False for i in range(width)] for i in range(height)] 
+    pick = random.Random(42)
 
-    if width > 0 and height > 0:
-        print(f"First row: {maze_grid[0]}")
+
+
 
 
 
@@ -91,14 +123,20 @@ def main() -> None:
     exit_str = config_settings.get("EXIT", "19,14") #20,15
     exit_x, exit_y = map(int, exit_str.split(","))
 
-    print(f"Entry point set: X = {entry_x} Y = {entry_y}")
-    print(f"Exit point set: X = {exit_x} Y = {exit_y}")
 
 
-    #MARKING COORDINATES
-    #maze_grid[entry_y][entry_x] = "S" #Start
-   #maze_grid[exit_y][exit_x] = "E" #Exit
 
+
+
+
+
+
+
+    open_passage(maze_grid, 0, 0, 1, 0)
+    options = get_neighbours(0, 0, width, height)
+    print(options)
+    for i in range(10):
+        print(pick.choice(options))
 
     print()
     print("=== Maze preview ===")
